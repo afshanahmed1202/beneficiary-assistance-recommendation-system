@@ -131,8 +131,6 @@ Beneficiary_Assistance_Recommendation_System/
 ├── beneficiary_data.csv
 ├── requirements.txt
 ├── README.md
-│
-└── screenshots/
 ```
 
 ---
@@ -142,7 +140,7 @@ Beneficiary_Assistance_Recommendation_System/
 ### Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/beneficiary-assistance-recommendation-system.git
+git clone https://github.com/afshanahmed1202/beneficiary-assistance-recommendation-system.git
 ```
 
 ### Navigate to Project Folder
