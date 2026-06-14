@@ -102,7 +102,7 @@ elif menu == "Recommendation System":
 
     income = st.number_input( "Monthly Income (₹)", min_value=0,value=3000)
 
-    education = st.selectbox("Education Level",["None", "School", "Graduate"])
+    education = st.selectbox("Education Level",["School", "Graduate" , "None" ])
 
     family_size = st.number_input("Family Size",min_value=1, max_value=15,value=5)
 
