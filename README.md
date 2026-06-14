@@ -137,18 +137,6 @@ Beneficiary_Assistance_Recommendation_System/
 
 ## Installation
 
-### Clone Repository
-
-```bash
-git clone https://github.com/afshanahmed1202/beneficiary-assistance-recommendation-system.git
-```
-
-### Navigate to Project Folder
-
-```bash
-cd beneficiary-assistance-recommendation-system
-```
-
 ### Install Dependencies
 
 ```bash
