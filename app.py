@@ -9,29 +9,18 @@ from sklearn.metrics import accuracy_score
 
 import plotly.express as px
 
-# -----------------------------
-# PAGE CONFIG
-# -----------------------------
 st.set_page_config(
     page_title="NayePankh Beneficiary Recommendation System",
     page_icon="🎯",
-    layout="wide"
-)
+    layout="wide")
 
 st.title("NayePankh Beneficiary Assistance Recommendation System")
 
-# -----------------------------
-# LOAD DATA
-# -----------------------------
-@st.cache_data
 def load_data():
     return pd.read_csv("beneficiary_data.csv")
 
 df = load_data()
 
-# -----------------------------
-# ENCODING
-# -----------------------------
 le_gender = LabelEncoder()
 le_education = LabelEncoder()
 le_location = LabelEncoder()
@@ -44,23 +33,13 @@ df["Location"] = le_location.fit_transform(df["Location"])
 df["Disability"] = le_disability.fit_transform(df["Disability"])
 df["Program"] = le_program.fit_transform(df["Program"])
 
-# -----------------------------
-# TRAIN MODEL
-# -----------------------------
+
 X = df.drop("Program", axis=1)
 y = df["Program"]
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    random_state=42
-)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,random_state=42)
 
-model = RandomForestClassifier(
-    n_estimators=200,
-    random_state=42
-)
+model = RandomForestClassifier( n_estimators=200, random_state=42)
 
 model.fit(X_train, y_train)
 
@@ -68,9 +47,6 @@ pred = model.predict(X_test)
 
 accuracy = accuracy_score(y_test, pred)
 
-# -----------------------------
-# SIDEBAR
-# -----------------------------
 st.sidebar.header("Navigation")
 
 menu = st.sidebar.radio(
@@ -79,123 +55,60 @@ menu = st.sidebar.radio(
         "Dashboard",
         "Recommendation System",
         "Model Performance"
-    ]
-)
+    ])
 
-# ====================================================
-# DASHBOARD
-# ====================================================
 if menu == "Dashboard":
 
     st.header("Dataset Overview")
 
     col1, col2, col3 = st.columns(3)
 
-    col1.metric(
-        "Total Beneficiaries",
-        len(df)
-    )
+    col1.metric("Total Beneficiaries",len(df))
 
-    col2.metric(
-        "Programs",
-        len(le_program.classes_)
-    )
+    col2.metric( "Programs",len(le_program.classes_) )
 
-    col3.metric(
-        "Model Accuracy",
-        f"{accuracy*100:.2f}%"
-    )
+    col3.metric("Model Accuracy",f"{accuracy*100:.2f}%")
 
     st.subheader("Sample Data")
 
     st.dataframe(df.head())
 
-    # Program Distribution
     st.subheader("Program Distribution")
 
-    program_names = le_program.inverse_transform(
-        df["Program"]
-    )
+    program_names = le_program.inverse_transform(df["Program"])
 
-    chart_df = pd.DataFrame(
-        {
-            "Program": program_names
-        }
-    )
+    chart_df = pd.DataFrame( {"Program": program_names})
 
     fig = px.histogram(
         chart_df,
         x="Program",
-        title="Beneficiary Distribution by Program"
-    )
+        title="Beneficiary Distribution by Program")
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-    # Income Distribution
+    st.plotly_chart(fig,use_container_width=True)
 
     st.subheader("Income Distribution")
 
-    income_fig = px.histogram(
-        df,
-        x="Monthly_Income",
-        nbins=20,
-        title="Monthly Income Distribution"
-    )
+    income_fig = px.histogram(df, x="Monthly_Income",nbins=20,title="Monthly Income Distribution")
 
-    st.plotly_chart(
-        income_fig,
-        use_container_width=True
-    )
+    st.plotly_chart(income_fig,use_container_width=True )
 
-# ====================================================
-# RECOMMENDATION PAGE
-# ====================================================
 elif menu == "Recommendation System":
 
     st.header("Get Assistance Recommendation")
 
-    age = st.number_input(
-        "Age",
-        min_value=10,
-        max_value=100,
-        value=20
-    )
+    age = st.number_input("Age",min_value=10, max_value=100, value=20)
 
-    gender = st.selectbox(
-        "Gender",
-        ["Male", "Female"]
-    )
+    gender = st.selectbox("Gender", ["Male", "Female"])
 
-    income = st.number_input(
-        "Monthly Income (₹)",
-        min_value=0,
-        value=3000
-    )
+    income = st.number_input( "Monthly Income (₹)", min_value=0,value=3000)
 
-    education = st.selectbox(
-        "Education Level",
-        ["None", "School", "Graduate"]
-    )
+    education = st.selectbox("Education Level",["None", "School", "Graduate"])
 
-    family_size = st.number_input(
-        "Family Size",
-        min_value=1,
-        max_value=15,
-        value=5
-    )
+    family_size = st.number_input("Family Size",min_value=1, max_value=15,value=5)
 
-    location = st.selectbox(
-        "Location",
-        ["Rural", "Urban"]
-    )
+    location = st.selectbox("Location",["Rural", "Urban"])
 
-    disability = st.selectbox(
-        "Disability",
-        ["No", "Yes"]
-    )
+    disability = st.selectbox("Disability",["No", "Yes"])
 
     if st.button("Recommend Program"):
 
@@ -211,25 +124,15 @@ elif menu == "Recommendation System":
 
         prediction = model.predict(input_data)
 
-        recommendation = (
-            le_program.inverse_transform(prediction)[0]
-        )
+        recommendation = ( le_program.inverse_transform(prediction)[0] )
 
-        probabilities = model.predict_proba(
-            input_data
-        )[0]
+        probabilities = model.predict_proba(input_data)[0]
 
-        top_indices = np.argsort(
-            probabilities
-        )[::-1][:3]
+        top_indices = np.argsort(probabilities )[::-1][:3]
 
-        st.success(
-            f"Recommended Program: {recommendation}"
-        )
+        st.success( f"Recommended Program: {recommendation}" )
 
-        st.subheader(
-            "Top 3 Recommended Programs"
-        )
+        st.subheader("Top 3 Recommended Programs")
 
         results = []
 
@@ -244,43 +147,28 @@ elif menu == "Recommendation System":
 
         st.table(pd.DataFrame(results))
 
-# ====================================================
-# MODEL PERFORMANCE
-# ====================================================
+
+
+
 elif menu == "Model Performance":
 
     st.header("Model Information")
 
-    st.metric(
-        "Random Forest Accuracy",
-        f"{accuracy*100:.2f}%"
-    )
+    st.metric("Random Forest Accuracy",f"{accuracy*100:.2f}%" )
 
     importance = model.feature_importances_
 
-    feature_df = pd.DataFrame(
-        {
-            "Feature": X.columns,
-            "Importance": importance
-        }
-    )
+    feature_df = pd.DataFrame({"Feature": X.columns, "Importance": importance} )
 
-    feature_df = feature_df.sort_values(
-        by="Importance",
-        ascending=False
-    )
+    feature_df = feature_df.sort_values(by="Importance",ascending=False)
 
     fig = px.bar(
         feature_df,
         x="Importance",
         y="Feature",
         orientation="h",
-        title="Feature Importance"
-    )
+        title="Feature Importance")
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+    st.plotly_chart(fig,use_container_width=True)
 
     st.dataframe(feature_df)
