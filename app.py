@@ -10,9 +10,10 @@ from sklearn.metrics import accuracy_score
 import plotly.express as px
 
 st.set_page_config(
-    page_title="NayePankh Beneficiary Recommendation System",
-    page_icon="🎯",
-    layout="wide")
+    page_title="NayePankh Beneficiary Assistance Recommendation System",
+    page_icon="nayepankh_icon.ico",
+    layout="wide"
+)
 
 st.title("NayePankh Beneficiary Assistance Recommendation System")
 
